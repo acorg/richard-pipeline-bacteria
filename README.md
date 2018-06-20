@@ -1,4 +1,4 @@
-# Lasse requencing initial pipeline spec
+# Richard pipeline bacteria
 
 This repo contains a
 [slurm-pipeline](https://github.com/acorg/slurm-pipeline) specification
