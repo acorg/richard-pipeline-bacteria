@@ -47,6 +47,7 @@ function sampleName()
 
 function tasksForSample()
 {
+    local filenumber=$1
     local sample=$(sampleName)
 
     # Emit a task for all sequencing files that correspond to this sample.
@@ -56,7 +57,7 @@ function tasksForSample()
     # sample name (which is why we have a .* at the end of the sed - to
     # also remove the sample name).
     # before: tasks=$(egrep " $sample\$" $sequencingToSample | sed -e 's/\.trim\.fastq\.gz.*//')
-    tasks=$(cut -f1 -d ' '< $sequencingToSample | sed -e 's/\.fastq$//')
+    tasks=$(cut -f1 -d ' '< $sequencingToSample | awk "NR == $filenumber"| sed -e 's/\.fastq$//')
 
     if [ -z "$tasks" ]
     then

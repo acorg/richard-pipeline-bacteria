@@ -5,7 +5,7 @@
 task=$1
 log=$logDir/sbatch.log
 # The following must have the identical value as is set in panel.sh
-out=summary-virus
+out=summary-bacteria
 
 echo "$(basename $(pwd)) sbatch.sh running at $(date)" >> $log
 echo "  Task is $task" >> $log

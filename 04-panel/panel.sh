@@ -5,7 +5,8 @@
 # The log file is the top-level sample log file, seeing as this step is a
 # 'collect' step that is only run once.
 log=$sampleLogFile
-out=summary-bacteria
+filenumber=$1
+out=summary-bacteria-$filenumber
 
 logStepStart $log
 logTaskToSlurmOutput panel $log
@@ -22,7 +23,7 @@ function panel()
 {
     echo "  noninteractive-alignment-panel.py started at $(date)" >> $log
 
-    dbFastaFile=$root/share/ncbi/diamond-dbs/20180609-bacteria.nonredundant_protein.fasta
+    dbFastaFile=$root/share/ncbi/diamond-dbs/20180609-bacteria.nonredundant_protein.dmnd
 
     if [ ! -f $dbFastaFile ]
     then
@@ -31,7 +32,7 @@ function panel()
         exit 1
     fi
 
-    tasks=$(tasksForSample)
+    tasks=$(tasksForSample $filenumber)
 
     allJSON=
     allFASTQ=
@@ -55,7 +56,7 @@ function panel()
         allFASTQ="$allFASTQ $FASTQ"
     done
 
-    local outputDir=out
+    local outputDir=out-$(printf '%02d' $filenumber)
 
     # Remove the output directory because it could be a pre-existing
     # symlink to (slow) cold storage. We'll write to fast disk and sometime
@@ -79,11 +80,11 @@ function panel()
       --minMatchingReads 10 \
       --scoreCutoff 50 \
       --minCoverage 0.1 \
-      --negativeTitleRegex phage > summary-proteins
+      --negativeTitleRegex phage > summary-proteins-$filenumber
     echo "  noninteractive-alignment-panel.py stopped at $(date)" >> $log
 
     echo "  proteins-to-pathogens.py started at $(date)" >> $log
-    echo summary-proteins | proteins-to-pathogens.py > $out
+    echo summary-proteins-$filenumber | proteins-to-pathogens.py > $out
     echo "  proteins-to-pathogens.py stopped at $(date)" >> $log
 }
 
